@@ -4,16 +4,180 @@
     <meta charset="UTF-8">
     <title>小聊天室</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        #messages {
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: scroll;
-            padding: 10px;
+        
+        body {
+            font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            margin: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #e0f2f1;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #388e3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 5px solid #fff;
+        }
+        
+        h1 {
+            color: #388e3c;
+            font-size: 2.3rem;
             margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #757575;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .intro {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        h2 {
+            color: #2E7D32;
+            margin: 30px 0 15px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 25px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+        }
+        
+        .interests {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 5px;
+        }
+        
+        .interests-list {
+            list-style: none;
+            padding: 15px;
+        }
+        
+        .interest-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .interest-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .interest-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .interest-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: #4CAF50;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 142, 60, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
