@@ -2,50 +2,436 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小方塊遊戲</title>
     <style>
-        body {
-            text-align: center;
-            margin-top: 50px;
-            font-family: Arial, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+        
+        body {
+            font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2, #ef9a9a);
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .game-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        h1 {
+            color: #d32f2f;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .instruction {
+            font-size: 1.2rem;
+            color: #616161;
+            margin-bottom: 20px;
+        }
+        
+        .score-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .score-label {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #d32f2f;
+            margin-right: 10px;
+        }
+        
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 5px 15px;
+            border-radius: 50px;
+            min-width: 60px;
+            border: 2px solid #ffcdd2;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #757575;
+        }
+        
+        .timer-value {
+            font-weight: 600;
+            color: #d32f2f;
+        }
+        
+        .game-area {
+            width: 100%;
+            height: 300px;
+            background-color: #f5f5f5;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 3px solid #ffcdd2;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
         #box {
             width: 50px;
             height: 50px;
-            background-color: tomato;
+            background: linear-gradient(135deg, #f44336, #d32f2f);
             position: absolute;
-            top: 100px;
-            left: 100px;
+            border-radius: 10px;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            user-select: none;
+        }
+        
+        #box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        #box:active {
+            transform: scale(0.95);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .btn-start {
+            background-color: #4caf50;
+        }
+        
+        .btn-start:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-reset {
+            background-color: #f44336;
+        }
+        
+        .btn-reset:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .level-display {
+            margin: 15px 0;
+            font-size: 1.1rem;
+            color: #d32f2f;
+            font-weight: 600;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #d32f2f;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #b71c1c;
+            text-decoration: underline;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 0, 0, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .game-area {
+                height: 250px;
+            }
+            
+            #box {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
 <body>
-
-
-    <h1>點擊紅色小方塊！</h1>
-    <p>試試看你能點到幾次～</p>
-    <div id="box"></div>
-
-
-    <p>得分：<span id="score">0</span></p>
-
+    <div class="game-container">
+        <h1>點擊紅色小方塊！</h1>
+        <p class="instruction">測試你的反應能力，看看你能得到多少分！</p>
+        
+        <div class="timer">時間：<span class="timer-value" id="timer">30</span> 秒</div>
+        
+        <div class="score-display">
+            <div class="score-label">得分：</div>
+            <div class="score-value" id="score">0</div>
+        </div>
+        
+        <div class="level-display" id="level-display">等級：初級</div>
+        
+        <div class="game-area" id="game-area">
+            <div id="box">+1</div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-start" id="start-btn">開始遊戲</button>
+            <button class="btn btn-reset" id="reset-btn">重新開始</button>
+        </div>
+        
+        <div>
+            <a href="index.html" class="back-link">返回首頁</a>
+        </div>
+    </div>
 
     <script>
         const box = document.getElementById('box');
         const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const levelDisplay = document.getElementById('level-display');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const gameArea = document.getElementById('game-area');
+        
         let score = 0;
-
-
+        let timeLeft = 30;
+        let gameInterval;
+        let gameStarted = false;
+        let boxSpeed = 1000;  // 方塊移動速度（毫秒）
+        let boxSize = 50;
+        let level = 1;
+        
+        // 初始化方塊位置
+        function initializeBox() {
+            // 確保方塊不會超出遊戲區域
+            const maxTop = gameArea.offsetHeight - boxSize;
+            const maxLeft = gameArea.offsetWidth - boxSize;
+            
+            box.style.top = Math.floor(Math.random() * maxTop) + 'px';
+            box.style.left = Math.floor(Math.random() * maxLeft) + 'px';
+            box.style.width = boxSize + 'px';
+            box.style.height = boxSize + 'px';
+        }
+        
+        // 更新等級顯示
+        function updateLevelDisplay() {
+            if (score < 10) {
+                levelDisplay.textContent = "等級：初級";
+                level = 1;
+            } else if (score < 20) {
+                levelDisplay.textContent = "等級：中級";
+                level = 2;
+                boxSpeed = 800;
+            } else if (score < 30) {
+                levelDisplay.textContent = "等級：高級";
+                level = 3;
+                boxSpeed = 600;
+                boxSize = 40;
+                box.style.width = boxSize + 'px';
+                box.style.height = boxSize + 'px';
+            } else {
+                levelDisplay.textContent = "等級：專家";
+                level = 4;
+                boxSpeed = 400;
+                boxSize = 30;
+                box.style.width = boxSize + 'px';
+                box.style.height = boxSize + 'px';
+            }
+        }
+        
+        // 點擊方塊事件
         box.addEventListener('click', () => {
+            if (!gameStarted) return;
+            
             score++;
             scoreDisplay.textContent = score;
-            // 每次被點到就移動到隨機位置
-            box.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-            box.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+            
+            // 更新等級
+            updateLevelDisplay();
+            
+            // 創建粒子特效
+            createParticles(event);
+            
+            // 移動方塊到新位置
+            moveBox();
         });
+        
+        // 移動方塊到隨機位置
+        function moveBox() {
+            const maxTop = gameArea.offsetHeight - boxSize;
+            const maxLeft = gameArea.offsetWidth - boxSize;
+            
+            box.style.top = Math.floor(Math.random() * maxTop) + 'px';
+            box.style.left = Math.floor(Math.random() * maxLeft) + 'px';
+        }
+        
+        // 自動移動方塊（難度增加）
+        function startAutoMove() {
+            clearInterval(gameInterval);
+            gameInterval = setInterval(() => {
+                if (gameStarted) {
+                    moveBox();
+                }
+            }, boxSpeed);
+        }
+        
+        // 開始遊戲
+        startBtn.addEventListener('click', () => {
+            if (gameStarted) return;
+            
+            gameStarted = true;
+            startBtn.disabled = true;
+            
+            // 開始計時器
+            const timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    clearInterval(gameInterval);
+                    gameStarted = false;
+                    startBtn.disabled = false;
+                    alert(`遊戲結束！你的得分是：${score}`);
+                }
+            }, 1000);
+            
+            // 初始化方塊位置
+            initializeBox();
+            
+            // 開始自動移動
+            startAutoMove();
+        });
+        
+        // 重置遊戲
+        resetBtn.addEventListener('click', () => {
+            clearInterval(gameInterval);
+            score = 0;
+            timeLeft = 30;
+            boxSpeed = 1000;
+            boxSize = 50;
+            level = 1;
+            gameStarted = false;
+            
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
+            levelDisplay.textContent = "等級：初級";
+            
+            box.style.width = boxSize + 'px';
+            box.style.height = boxSize + 'px';
+            
+            initializeBox();
+            startBtn.disabled = false;
+        });
+        
+        // 粒子效果
+        function createParticles(e) {
+            const rect = box.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                document.body.appendChild(particle);
+                
+                // 設置粒子初始位置
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                
+                // 粒子動畫
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3 + 2;
+                const x = Math.cos(angle) * speed;
+                const y = Math.sin(angle) * speed;
+                const size = Math.random() * 8 + 5;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                let posX = centerX;
+                let posY = centerY;
+                let opacity = 1;
+                let gravity = 0.05;
+                
+                const particleAnimation = setInterval(() => {
+                    posX += x;
+                    posY += y + gravity;
+                    gravity += 0.05;
+                    opacity -= 0.02;
+                    
+                    particle.style.left = posX + 'px';
+                    particle.style.top = posY + 'px';
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity <= 0) {
+                        clearInterval(particleAnimation);
+                        particle.remove();
+                    }
+                }, 20);
+            }
+        }
+        
+        // 初始化遊戲
+        initializeBox();
     </script>
-
-
 </body>
 </html>
