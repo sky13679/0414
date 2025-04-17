@@ -2,8 +2,9 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小聊天室</title>
-       <style>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -12,211 +13,285 @@
         
         body {
             font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            background: linear-gradient(135deg, #e8f5e9, #dcedc8);
             background-attachment: fixed;
             color: #333;
-            line-height: 1.7;
-            padding: 40px 20px;
+            line-height: 1.6;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
         
-        .container {
-            background-color: #fff;
-            padding: 40px;
+        .chat-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
             border-radius: 20px;
-            max-width: 700px;
-            width: 90%;
-            margin: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 100%;
-            height: 8px;
-            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            max-width: 800px;
+            margin: 20px auto;
         }
         
-        .header {
-            margin-bottom: 30px;
+        .chat-header {
             text-align: center;
+            margin-bottom: 25px;
             position: relative;
+            padding-bottom: 15px;
         }
         
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: #e0f2f1;
-            margin: 0 auto 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 3rem;
-            color: #388e3c;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 5px solid #fff;
-        }
-        
-        h1 {
-            color: #388e3c;
-            font-size: 2.3rem;
+        .chat-header h1 {
+            color: #558b2f;
+            font-size: 2.2rem;
             margin-bottom: 10px;
-            font-weight: 700;
         }
         
-        .subtitle {
-            color: #757575;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-        
-        .intro {
-            background: #f9f9f9;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border-left: 5px solid #4CAF50;
-        }
-        
-        h2 {
-            color: #2E7D32;
-            margin: 30px 0 15px;
-            font-size: 1.6rem;
-            font-weight: 600;
-            position: relative;
-            padding-left: 20px;
-        }
-        
-        h2::before {
+        .chat-header::after {
             content: "";
             position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 25px;
-            background-color: #4CAF50;
-            border-radius: 4px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, #558b2f, #7cb342);
+            border-radius: 3px;
         }
         
-        .interests {
-            background: #f9f9f9;
-            border-radius: 15px;
-            padding: 5px;
-        }
-        
-        .interests-list {
-            list-style: none;
-            padding: 15px;
-        }
-        
-        .interest-item {
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        .user-info {
             display: flex;
             align-items: center;
-            transition: transform 0.2s ease;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 5px solid #7cb342;
         }
         
-        .interest-item:hover {
-            transform: translateX(5px);
-        }
-        
-        .interest-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .interest-icon {
-            margin-right: 15px;
-            font-size: 1.5rem;
-            color: #4CAF50;
-            min-width: 30px;
-            text-align: center;
-        }
-        
-        .back-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 25px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
+        .user-info label {
             font-weight: 600;
-            transition: all 0.3s ease;
+            color: #558b2f;
+            margin-right: 10px;
+            font-size: 1.1rem;
         }
         
-        .back-button:hover {
-            background-color: #388e3c;
+        .user-info input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+        
+        .user-info input:focus {
+            border-color: #7cb342;
+        }
+        
+        .messages-container {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            height: 350px;
+            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-break: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-content {
+            background-color: #e8f5e9;
+            padding: 12px 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: inline-block;
+        }
+        
+        .username {
+            font-weight: 600;
+            color: #558b2f;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-container input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .input-container input:focus {
+            border-color: #7cb342;
+            box-shadow: 0 0 0 3px rgba(124, 179, 66, 0.2);
+        }
+        
+        .send-button {
+            background-color: #7cb342;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-button:hover {
+            background-color: #558b2f;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(56, 142, 60, 0.3);
+            box-shadow: 0 5px 15px rgba(124, 179, 66, 0.3);
+        }
+        
+        .send-button:active {
+            transform: translateY(0);
+        }
+        
+        .send-icon {
+            margin-left: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #558b2f;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #33691e;
+            text-decoration: underline;
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
+            .chat-container {
+                padding: 20px;
             }
             
-            h1 {
+            .chat-header h1 {
                 font-size: 1.8rem;
             }
             
-            .avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info label {
+                margin-bottom: 5px;
+            }
+            
+            .user-info input {
+                width: 100%;
+            }
+            
+            .send-button {
+                padding: 12px 15px;
             }
         }
     </style>
 </head>
 <body>
-
-
-    <h1>聊天室</h1>
-
-
-    <div>
-        名字：<input type="text" id="username" placeholder="輸入你的名字">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>聊天室</h1>
+        </div>
+        
+        <div class="user-info">
+            <label for="username">暱稱：</label>
+            <input type="text" id="username" placeholder="請輸入你的名字">
+        </div>
+        
+        <div class="messages-container" id="messages"></div>
+        
+        <div class="input-container">
+            <input type="text" id="input" placeholder="輸入訊息..." autocomplete="off">
+            <button class="send-button" onclick="sendMessage()">
+                送出
+                <span class="send-icon">➤</span>
+            </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="index.html" class="back-link">返回首頁</a>
+        </div>
     </div>
-    <div id="messages"></div>
-
-
-    <input type="text" id="input" placeholder="輸入訊息...">
-    <button onclick="sendMessage()">送出</button>
-
 
     <script>
         const messages = document.getElementById('messages');
         const input = document.getElementById('input');
         const username = document.getElementById('username');
 
+        // 按Enter鍵送出訊息
+        input.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
 
         function sendMessage() {
-            if (input.value.trim() === '' || username.value.trim() === '') {
-                alert('請輸入名字和訊息！');
+            if (input.value.trim() === '') {
+                alert('請輸入訊息！');
                 return;
             }
-            const msg = `<b>${username.value}：</b> ${input.value}`;
-            const div = document.createElement('div');
-            div.innerHTML = msg;
-            messages.appendChild(div);
+            
+            const name = username.value.trim() === '' ? '匿名用戶' : username.value;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            
+            const message = `
+                <div class="message-content">
+                    <div class="username">${name}</div>
+                    <div>${input.value}</div>
+                </div>
+            `;
+            
+            messageDiv.innerHTML = message;
+            messages.appendChild(messageDiv);
+            
             input.value = '';
             messages.scrollTop = messages.scrollHeight; // 自動捲到最下面
+            
+            // 聚焦於輸入框
+            input.focus();
         }
+        
+        // 頁面載入時聚焦於名稱輸入框
+        window.onload = function() {
+            username.focus();
+        };
     </script>
-
-
 </body>
 </html>
