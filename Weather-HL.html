@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <title>天氣預報 (36 小時)</title>
+  </head>
+  <body>
+    <h1>全台最高 / 最低溫城市</h1>
+    <div id="weatherResult">載入中…</div>
+
+    <script>
+      const apiUrl = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-FE4AD205-4642-40AD-B7FD-336A53D1ED2A';
+      const weatherResult = document.getElementById('weatherResult');
+
+      async function loadWeather() {
+        try {
+          const resp = await fetch(apiUrl);
+          if (!resp.ok) throw new Error(`HTTP 錯誤：${resp.status}`);
+          const data = await resp.json();
+          const locations = data.records.location;
+          if (!locations || !locations.length) {
+            weatherResult.textContent = '未取得任何天氣資料';
+            return;
+          }
+
+          let maxTempCity = '', maxTemp = -Infinity;
+          let minTempCity = '', minTemp = Infinity;
+
+          locations.forEach(loc => {
+            const name = loc.locationName;
+
+            const maxT = loc.weatherElement.find(e => e.elementName === 'MaxT');
+            const maxVal = maxT && maxT.time[0] ? parseInt(maxT.time[0].parameter.parameterName, 10) : null;
+
+            const minT = loc.weatherElement.find(e => e.elementName === 'MinT');
+            const minVal = minT && minT.time[0] ? parseInt(minT.time[0].parameter.parameterName, 10) : null;
+
+            if (maxVal !== null && maxVal > maxTemp) {
+              maxTemp = maxVal;
+              maxTempCity = name;
+            }
+
+            if (minVal !== null && minVal < minTemp) {
+              minTemp = minVal;
+              minTempCity = name;
+            }
+          });
+
+          weatherResult.innerHTML = `
+            <p>🌞 最高溫城市：${maxTempCity}（${maxTemp}°C）</p>
+            <p>❄️ 最低溫城市：${minTempCity}（${minTemp}°C）</p>
+          `;
+        } catch (err) {
+          weatherResult.textContent = '載入失敗：' + err.message;
+        }
+      }
+
+      loadWeather();
+    </script>
+  </body>
+</html>
